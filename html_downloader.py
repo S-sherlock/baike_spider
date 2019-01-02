@@ -12,4 +12,4 @@ class HtmlDownloader(object):
         if response.status_code != 200:
             raise Exception(f"请求失败，code {response.status_code}")
 
-        return response.text
+        return response.content.decode(encoding='utf-8')

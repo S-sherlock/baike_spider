@@ -1,15 +1,18 @@
-from . import html_downloader, html_parser, html_outputer, url_manager
+from url_manager import UrlManager
+from html_downloader import HtmlDownloader
+from html_parser import HtmlParser
+from html_outputer import HtmlOutput
 import time
 
 # 项目入口
 class SpiderMain(object):
     def __init__(self):
-        self.urls = url_manager.UrlManager()
-        self.downloader = html_downloader.HtmlDownloader()
-        self.parser = html_parser.HtmlParser()
-        self.output = html_outputer.HtmlOutput()
+        self.urls = UrlManager()
+        self.downloader = HtmlDownloader()
+        self.parser = HtmlParser()
+        self.output = HtmlOutput()
 
-    def craw(self, root_url, page_amount=5, time_sleep=None):
+    def craw(self, root_url, page_amount, time_sleep):
         count = 1
         # 添加第一个待爬取url
         self.urls.add_new_url(root_url)
@@ -24,13 +27,14 @@ class SpiderMain(object):
                 # xpath解析html，得到需要的数据
                 new_urls, new_data = self.parser.parser(html_content)
                 # 一个词条页面上关联的a链接列表加入到url管理器中待爬取
+                # 调用url_manager.py里的add_new_urls方法，把从html_parser.py里返回的new_urls传进去
                 self.urls.add_new_urls(new_urls)
                 self.output.collect_data(new_url, new_data)
                 count += 1
                 if count > page_amount:
                     break
 
-                time.sleep(2)
+                time.sleep(time_sleep)
             except Exception as e:
                 print(f'craw failed {new_url}')
                 print(e)
