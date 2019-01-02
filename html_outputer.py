@@ -1,0 +1,2 @@
+class HtmlOutput(object):
+    pass
